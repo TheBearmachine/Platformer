@@ -14,7 +14,6 @@ static const float GRAVITY = 5.0f;
 
 Player::Player(sf::RenderWindow* window, EntityManager* entityManager) :
 	mWindow(window), mEntityManager(entityManager),
-	mCollisions(0), mCollisionVector(),
 	mCanJump(false), mFriction(4.0) {
 	mSprite.setFillColor(sf::Color::Blue);
 	mSprite.setOutlineThickness(0.0f);
@@ -33,12 +32,8 @@ void Player::setCursor(MouseCursor * cursor) {
 
 void Player::tick(const sf::Time & deltaTime) {
 	//Shitty lag solution
-	if (deltaTime.asSeconds() >= 0.75f)
+	if (deltaTime.asSeconds() >= 0.25f)
 		return;
-
-	mCollisions = 0;
-	mCollisionVector = { 0.0f, 0.0f };
-	mWallCollides.clear();
 
 	// Calculate movement
 	mVelocity.y = mVelocity.y + GRAVITY * deltaTime.asSeconds();
@@ -76,31 +71,14 @@ void Player::tick(const sf::Time & deltaTime) {
 
 void Player::collide(CollidableEntity* collidable, const sf::Vector2f& moveAway) {
 	if (collidable->getCategory() == CollidableEntity::CollideCategory::WALL) {
-		mCollisions++;
-		mCollisionVector += moveAway;
-		mWallCollides.push_back(collidable);
-
 		move(moveAway);
-
-		if (mCollisions == 2) {
-			if ((mWallCollides[0]->getPosition().x > getPosition().x &&
-				mWallCollides[1]->getPosition().x > getPosition().x) || (
-					mWallCollides[0]->getPosition().x < getPosition().x &&
-					mWallCollides[1]->getPosition().x < getPosition().x)) {
-				move(0.0f, -mCollisionVector.y);
-				mVelocity.x = 0.0f;
-			}
-			else if ((mWallCollides[0]->getPosition().y > getPosition().y &&
-				mWallCollides[1]->getPosition().y > getPosition().y) || (
-					mWallCollides[0]->getPosition().y < getPosition().y &&
-					mWallCollides[1]->getPosition().y < getPosition().y)) {
-				mCanJump = true;
-				move(-mCollisionVector.x, 0.0f);
-				mVelocity.y = 0.0f;
-			}
+		mVelocity.x = 0.0f;
+	}
+	else if (collidable->getCategory() == CollidableEntity::CollideCategory::FLOOR) {
+		if (abs(moveAway.x) < abs(moveAway.y)) {
+			mCanJump = true;
+			mVelocity.y = 0.0f;
 		}
-		else {
-
-		}
+		move(moveAway);
 	}
 }

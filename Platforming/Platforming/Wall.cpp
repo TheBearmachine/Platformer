@@ -1,9 +1,10 @@
 #include "Wall.h"
 #include "TileMap.h"
+#include "Constants.h"
 #include <SFML/Window/Keyboard.hpp>
 
-Wall::Wall(TileMap* tileMap, int quadVertices) :
-	mTileMap(tileMap) {
+Wall::Wall(TileMap* tileMap, int quadVertices, int arrayPos) :
+	mTileMap(tileMap), mArrayPos(arrayPos) {
 	mCat = CollideCategory::WALL;
 	mQuadVertices = quadVertices;
 }
@@ -18,6 +19,10 @@ int Wall::getVertex() const {
 
 void Wall::setVertex(int num) {
 	mQuadVertices = num;
+}
+
+void Wall::setCollisionCat(CollideCategory cat){
+	mCat = cat;
 }
 
 void Wall::tick(const sf::Time& deltaTime) {

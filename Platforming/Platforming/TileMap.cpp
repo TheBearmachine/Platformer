@@ -1,6 +1,8 @@
 #include "TileMap.h"
 #include "CollisionManager.h"
+#include "ResourceManager.h"
 #include "Wall.h"
+#include "Constants.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 
 TileMap::TileMap(CollisionManager* collisionManager) :
@@ -17,22 +19,21 @@ void TileMap::removeVertices(int vertex) {
 	for (size_t i = 0; i < 4; i++) {
 		mVertices[vertex + i] = mVertices[count - 4 + i];
 	}
-	for (auto t : mTileCollisions) {
+	/*for (auto t : mTileCollisions) {
 		int vert = t->getVertex();
 		if (vert == count - 4) {
 			t->setVertex(vertex);
 			break;
 		}
-	}
+	}*/
 	mVertices.resize(count - 4);
 }
 
 bool TileMap::load(const char* tileset, sf::Vector2u tileSize, int* tiles, unsigned width, unsigned height) {
 	if (tileset != nullptr)
-		if (!mTileset.loadFromFile(tileset)) {
-			printf("Failed to load file %s", tileset);
-			return false;
-		}
+		mTileset = &ResourceManager::getInstance().getTexture(tileset);
+	else 
+		return false;
 
 	mTileSize = tileSize;
 	mTiles = tiles;
@@ -45,9 +46,11 @@ bool TileMap::load(const char* tileset, sf::Vector2u tileSize, int* tiles, unsig
 			if (tileNumber == -1)
 				continue;
 
-			int tu = tileNumber % (mTileset.getSize().x / mTileSize.x);
-			int tv = tileNumber / (mTileset.getSize().x / mTileSize.x);
+			int tu = tileNumber % (mTileset->getSize().x / mTileSize.x);
+			int tv = tileNumber / (mTileset->getSize().x / mTileSize.x);
 			int pos = (i + j * width) * 4;
+			int pos2 = pos / 4;
+			int pos3 = pos2 - Constants::Map::Width;
 			sf::Vertex* quad = &mVertices[pos];
 			quad[0].position = sf::Vector2f((float)(i * mTileSize.x), (float)(j * mTileSize.y));
 			quad[1].position = sf::Vector2f((float)((i + 1) * mTileSize.x), (float)(j * mTileSize.y));
@@ -59,31 +62,30 @@ bool TileMap::load(const char* tileset, sf::Vector2u tileSize, int* tiles, unsig
 			quad[2].texCoords = sf::Vector2f((float)((tu + 1) * mTileSize.x), (float)((tv + 1) * mTileSize.y));
 			quad[3].texCoords = sf::Vector2f((float)(tu * mTileSize.x), (float)((tv + 1) * mTileSize.y));
 
-			Wall* wall = new Wall(this, pos);
+			Wall* wall = new Wall(this, pos, pos2);
 			wall->setSprite((float)tileSize.x, (float)tileSize.y);
 			wall->setPosition(quad[0].position);
-			mTileCollisions.push_back(wall);
-			mCollisionManager->addStaticCollidable(wall);
+			mWallHashTable[pos2] = wall;
+			if (pos3 > 0 && mWallHashTable[pos3] == nullptr) {
+				wall->setCollisionCat(CollidableEntity::CollideCategory::FLOOR);
+			}
 		}
 	}
 	return true;
 }
 
+CollidableEntity** TileMap::getWallHashTable()
+{
+	return mWallHashTable;
+}
+
 void TileMap::tick(const sf::Time & deltaTime) {
-	std::vector<Wall*> temp;
-	for (auto t : mTileCollisions) {
-		if (t->garbage())
-			delete t;
-		else
-			temp.push_back(t);
-	}
-	mTileCollisions = temp;
 
 }
 
 void TileMap::draw(sf::RenderTarget & target, sf::RenderStates states) const {
 	states.transform *= getTransform();
-	states.texture = &mTileset;
+	states.texture = mTileset;
 	target.draw(mVertices, states);
 }
 
