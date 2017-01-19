@@ -25,9 +25,6 @@ private:
 	MouseCursor* mCursor;
 	
 	sf::Vector2f mVelocity;
-	sf::Vector2f mCollisionVector;
-	std::vector<CollidableEntity*> mWallCollides;
-	int mCollisions;
 	float mFriction;
 	bool mCanJump;
 };

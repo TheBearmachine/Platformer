@@ -14,6 +14,7 @@ public:
 		ENEMY,
 		ENEMY_PROJECTILE,
 		WALL,
+		FLOOR,
 		IGNORE
 	};
 

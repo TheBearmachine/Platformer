@@ -1,6 +1,7 @@
 #include "GameStatePlaying.h"
 #include "EventManager.h"
 #include "Player.h"
+#include "Inventory.h"
 #include "TileMap.h"
 #include "MouseCursor.h"
 #include "Backdrop.h"
@@ -63,7 +64,11 @@ void GameStatePlaying::setup()
 	Player* player = new Player(mWindow, mEntityManager);
 	mEntityManager->addEntity(player, 50);
 	mCollisionManager->addDynamicCollidable(player);
-	std::vector<int> level = readMap(MAP);
+	//std::vector<int> level = readMap(MAP);
+
+	Inventory* inventory = new Inventory(mEventManager);
+	inventory->setupInventory(8, 8);
+	mEntityManager->addEntity(inventory, 105);
 
 	cursor->initalize(player, mEventManager, mWindow);
 	player->setCursor(cursor);
@@ -76,6 +81,7 @@ void GameStatePlaying::setup()
 	if (!tileMap->load(TILESET, sf::Vector2u(32, 32), &levelAlso[0], mMapWidth, mMapHeight))
 		return;
 	mEntityManager->addEntity(tileMap, 2);
+	mCollisionManager->addTileMap(tileMap);
 
 	/*Backdrop* backdrop = new Backdrop();
 	backdrop->load(BACKGROUND);

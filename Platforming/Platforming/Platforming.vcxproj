@@ -135,10 +135,14 @@
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameStatePlaying.cpp" />
+    <ClCompile Include="Inventory.cpp" />
+    <ClCompile Include="InventorySlot.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MapGenerator.cpp" />
     <ClCompile Include="MouseCursor.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="simplexnoise.cpp" />
     <ClCompile Include="TileMap.cpp" />
     <ClCompile Include="VectorMath.cpp" />
     <ClCompile Include="Wall.cpp" />
@@ -149,6 +153,7 @@
     <ClInclude Include="CollidableEntity.h" />
     <ClInclude Include="CollidableEntityDefault.h" />
     <ClInclude Include="CollisionManager.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="EventManager.h" />
@@ -156,9 +161,13 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="GameStatePlaying.h" />
+    <ClInclude Include="Inventory.h" />
+    <ClInclude Include="InventorySlot.h" />
     <ClInclude Include="MapGenerator.h" />
     <ClInclude Include="MouseCursor.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="simplexnoise.h" />
     <ClInclude Include="TileMap.h" />
     <ClInclude Include="VectorMath.h" />
     <ClInclude Include="Wall.h" />

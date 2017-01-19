@@ -1,13 +1,15 @@
 #include "CollisionManager.h"
+#include "TileMap.h"
 #include "VectorMath.h"
+#include "Constants.h"
 #include <SFML/Graphics/Shape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <stack>
 
 static const int COLLISION_RADIUS = 200;
 
-CollisionManager::CollisionManager(sf::RenderWindow* window):
-mWindow(window){
+CollisionManager::CollisionManager(sf::RenderWindow* window) :
+	mWindow(window) {
 
 }
 
@@ -19,17 +21,17 @@ void CollisionManager::addDynamicCollidable(CollidableEntity* collidable) {
 	mDynamicCollidables.push_back(collidable);
 }
 
-void CollisionManager::addStaticCollidable(CollidableEntity* collidable) {
-	mStaticCollidables.push_back(collidable);
+void CollisionManager::addTileMap(TileMap* tileMap) {
+	mTileMap = tileMap;
 }
 
 const CollisionManager::CollidableVector& CollisionManager::getDynamicCollidables() const {
 	return mDynamicCollidables;
 }
 
-const CollisionManager::CollidableVector& CollisionManager::getStaticCollidables() const {
-	return mStaticCollidables;
-}
+//TileMap& CollisionManager::getTileMap(){
+//	return mTileMap;
+//}
 
 std::pair<float, float> getProjection(const sf::Shape& shape, sf::Vector2f& axis) {
 	sf::Transform trans = shape.getTransform();
@@ -48,12 +50,13 @@ std::pair<float, float> getProjection(const sf::Shape& shape, sf::Vector2f& axis
 }
 
 void CollisionManager::detectCollisions() {
-	sf::FloatRect bounds(mWindow->mapPixelToCoords({0, 0}),
+	sf::FloatRect bounds(mWindow->mapPixelToCoords({ 0, 0 }),
 		mWindow->getView().getSize());
 	bounds.left -= 50.0f;
 	bounds.top -= 50.0f;
 	bounds.height += 100.0f;
 	bounds.width += 100.0f;
+	//TileMap::getWallHashTable();
 
 
 	//Culls collision to only account for active against static so that
@@ -61,12 +64,12 @@ void CollisionManager::detectCollisions() {
 	std::stack<std::pair<CollidableEntity*, CollidableEntity*>> colliding;
 
 	CollidableVector staticCollidables;
-	for (std::size_t i = 0; i < mStaticCollidables.size(); i++) {
+	/*for (std::size_t i = 0; i < mStaticCollidables.size(); i++) {
 		if (mStaticCollidables[i]->getCategory() == CollidableEntity::CollideCategory::WALL &&
 			bounds.contains(mStaticCollidables[i]->getPosition()))
 			staticCollidables.push_back(mStaticCollidables[i]);
 
-	}
+	}*/
 	for (std::size_t i = 0; i < mDynamicCollidables.size(); i++) {
 		CollidableEntity* collidable0 = mDynamicCollidables[i];
 		for (std::size_t j = i + 1; j < mDynamicCollidables.size(); j++) {
@@ -75,12 +78,27 @@ void CollisionManager::detectCollisions() {
 				colliding.push(std::make_pair(collidable0, collidable1));
 			}
 		}
+		int position = (int)collidable0->getPosition().x / Constants::Block::Width +
+			((int)collidable0->getPosition().y / Constants::Block::Height) * Constants::Map::Width;
+
+		//Get a square grid of 5x5 around the position wrapped around the map size to avoid out of bounds
+		for (int j = -2; j < 3; j++) {
+			for (int k = -2; k < 3; k++) {
+				int absPos = abs(position + j + k*Constants::Map::Width)
+					% (Constants::Map::Height*Constants::Map::Width);
+				CollidableEntity* entity = mTileMap->getWallHashTable()[absPos];
+				if (entity != nullptr)
+					staticCollidables.push_back(entity);
+			}
+		}
+
 		for (std::size_t j = 0; j < staticCollidables.size(); j++) {
 			CollidableEntity *collidable1 = staticCollidables[j];
 			if (collidable0->getHitbox().intersects(collidable1->getHitbox()) && (collidable0->getCategory() != collidable1->getCategory())) {
 				colliding.push(std::make_pair(collidable0, collidable1));
 			}
 		}
+		staticCollidables.clear();
 	}
 	while (!colliding.empty()) {
 		narrowCollision(colliding.top());
@@ -97,16 +115,10 @@ void CollisionManager::removeDeadCollidables() {
 	mDynamicCollidables = vec;
 	vec.clear();
 
-	for (auto c : mStaticCollidables) {
-		if (!c->garbage())
-			vec.push_back(c);
-	}
-	mStaticCollidables = vec;
 }
 
 void CollisionManager::clearVector() {
 	mDynamicCollidables.clear();
-	mStaticCollidables.clear();
 }
 
 void CollisionManager::narrowCollision(std::pair<CollidableEntity*, CollidableEntity*>& colliding) {

@@ -7,6 +7,7 @@
 namespace sf {
 	class RenderWindow;
 }
+class TileMap;
 
 class CollisionManager {
 public:
@@ -15,9 +16,9 @@ public:
 	~CollisionManager();
 
 	void addDynamicCollidable(CollidableEntity* collidable);
-	void addStaticCollidable(CollidableEntity* collidable);
+	void addTileMap(TileMap* tileMap);
 	const CollidableVector& getDynamicCollidables() const;
-	const CollidableVector& getStaticCollidables() const;
+	//TileMap& getTileMap();
 	void detectCollisions();
 	void removeDeadCollidables();
 	void clearVector();
@@ -26,6 +27,6 @@ public:
 private:
 	sf::RenderWindow* mWindow;
 	CollidableVector mDynamicCollidables;
-	CollidableVector mStaticCollidables;
+	TileMap* mTileMap;
 };
 #endif // !_INCLUDED_COLLISIONMANAGER_H_
