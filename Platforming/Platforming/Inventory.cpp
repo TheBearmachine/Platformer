@@ -8,7 +8,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
 
-static const char* TEXTURE_FRAME = "Images/InventoryFrame.png";
+static const char* TEXTURE_FRAME = "Resources/Images/InventoryFrame.png";
 
 Inventory::Inventory(EventManager* eventManager, EntityManager* entityManager) :
 	mEventManager(eventManager),
@@ -24,10 +24,7 @@ Inventory::Inventory(EventManager* eventManager, EntityManager* entityManager) :
 
 Inventory::~Inventory() {
 	mEventManager->unregisterObserver(this, sf::Event::EventType::KeyPressed);
-	/*while (!mInventorySlots.empty()) {
-		delete mInventorySlots.back();
-		mInventorySlots.pop_back();
-	}*/
+
 	mInventorySlots.clear();
 }
 
@@ -44,7 +41,7 @@ void Inventory::setupInventory(int width, int height) {
 				(float)tex->getSize().y*(float)j);
 			InventorySlot slot = InventorySlot();
 			slot.setTexture(TEXTURE_FRAME);
-			slot.setPosition(vec2);
+			slot.setPosition(vec2 + getPosition());
 			mInventorySlots.push_back(slot);
 		}
 	}
@@ -82,6 +79,7 @@ void Inventory::addItem(Item* item) {
 
 		// If there is no item add the new item
 		if (invItem == nullptr) {
+			item->setRenderLayer(110);
 			item->anchorToEntity(&mInventorySlots[i]);
 			mInventorySlots[i].setContent(item);
 			item->anchorToEntity(&mInventorySlots[i]);
@@ -90,14 +88,15 @@ void Inventory::addItem(Item* item) {
 
 		// If the item has the same ID and is at less than max stacks
 		// then merge the items
-		else if (invItem->getItemID() == item->getItemID() &&
-				 invItem->getItemInfo()->maxStack < item->getStackSize()) {
+		else if (invItem->getItemInfo()->ID == item->getItemInfo()->ID &&
+			invItem->getItemInfo()->maxStack < item->getStackSize()) {
 			// If there are more stacks in total than the max stack, create a new
 			// instance and
+			item->setRenderLayer(110);
 			if (invItem->getStackSize() + item->getStackSize() > invItem->getItemInfo()->maxStack) {
 				int newSize = invItem->getStackSize() + item->getStackSize() - invItem->getItemInfo()->maxStack;
 				invItem->setMaxStack();
-				Item* newItem = new Item(item->getItemID(), newSize);
+				Item* newItem = new Item(item->getItemInfo()->ID, newSize);
 				newItem->setRenderLayer(item->getRenderLayer());
 				mEntityManager->addEntity(newItem);
 				addItem(newItem);
@@ -120,13 +119,14 @@ void Inventory::tick(const sf::Time& deltaTime) {
 
 void Inventory::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	if (!mActive) return;
-	states.transform *= getTransform();
-	target.draw(mBackground, states);
+	sf::RenderStates states1(states);
+	states1.transform *= getTransform();
+	target.draw(mBackground, states1);
 
 	for (auto i : mInventorySlots) {
-		/*sf::RenderStates states2(states);
-		states2.transform *= i.getTransform();*/
-		target.draw(i, states);
+		sf::RenderStates states2(states);
+		states2.transform *= i.getTransform();
+		target.draw(i, states2);
 	}
 }
 
@@ -144,7 +144,7 @@ void Inventory::observe(const sf::Event& _event) {
 		if (_event.key.code == sf::Keyboard::I) {
 			mActive = !mActive;
 			for (size_t i = 0; i < mInventorySlots.size(); i++) {
-				if (mInventorySlots[i].getContent != nullptr)
+				if (mInventorySlots[i].getContent() != nullptr)
 					if (mActive)
 						mInventorySlots[i].getContent()->setDrawMe(true);
 					else

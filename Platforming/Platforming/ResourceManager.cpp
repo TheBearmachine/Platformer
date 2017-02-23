@@ -7,7 +7,7 @@ ResourceManager& ResourceManager::getInstance() {
 
 sf::Texture& ResourceManager::getTexture(const std::string& filename) {
 	if (mTextures.find(filename) == mTextures.end()) {
-		printf("File not loaded: %s. Will load it for you.", filename);
+		printf("File not loaded: %s. Will load it into memory.\n", filename);
 		loadTexture(filename, sf::IntRect());
 	}
 	return mTextures[filename];
@@ -18,7 +18,7 @@ sf::Texture & ResourceManager::loadTexture(const std::string& filename, const sf
 		sf::Texture *texture = &mTextures[filename];
 		bool textureLoaded = texture->loadFromFile(filename, rect);
 		if (!textureLoaded)
-			printf("Warning, Failed to find %s.", filename);
+			printf("Warning, Failed to find %s.\n", filename);
 		texture->setSmooth(true);
 	}
 	return mTextures[filename];
@@ -34,7 +34,7 @@ void ResourceManager::clearAllTextures() {
 
 sf::Font & ResourceManager::getFont(const std::string& filename) {
 	if (mFonts.find(filename) == mFonts.end()) {
-		printf("File not loaded: %s. Will load it for you.", filename);
+		printf("File not loaded: %s. Will load it into memory.\n", filename);
 		loadFont(filename);
 	}
 	return mFonts[filename];
@@ -45,7 +45,7 @@ sf::Font & ResourceManager::loadFont(const std::string& filename) {
 		sf::Font* font = &mFonts[filename];
 		bool fontLoaded = font->loadFromFile(filename);
 		if (!fontLoaded)
-			printf("Warning, Failed to find %s.", filename);
+			printf("Warning, Failed to find %s.\n", filename);
 	}
 	return mFonts[filename];
 }

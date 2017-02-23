@@ -4,7 +4,7 @@
 #include "EventManager.h"
 #include "Inventory.h"
 
-static const char* TEXTURE = "Images/MousePointer.png";
+static const char* TEXTURE = "Resources/Images/MousePointer.png";
 
 MouseCursor::MouseCursor() :
 	mTexture(), mSprite() {

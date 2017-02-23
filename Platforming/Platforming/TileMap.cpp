@@ -32,7 +32,7 @@ void TileMap::removeVertices(int vertex) {
 bool TileMap::load(const char* tileset, sf::Vector2u tileSize, int* tiles, unsigned width, unsigned height) {
 	if (tileset != nullptr)
 		mTileset = &ResourceManager::getInstance().getTexture(tileset);
-	else 
+	else
 		return false;
 
 	mTileSize = tileSize;

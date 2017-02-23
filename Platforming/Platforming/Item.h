@@ -23,7 +23,6 @@ public:
 	int getStackSize() const;
 	void addToStack(int size);
 	void setMaxStack();
-	int getItemID() const;
 	void setDrawMe(bool toDraw);
 
 private:
@@ -36,5 +35,4 @@ private:
 	ItemDatabase::ItemStruct* mItemInfo;
 	bool mDrawMe;
 	int mStackSize;
-	int mItemID;
 };

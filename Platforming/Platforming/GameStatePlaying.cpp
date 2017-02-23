@@ -9,13 +9,13 @@
 #include "MapGenerator.h" 
 #include "Camera.h"
 #include "Constants.h"
+#include "ItemDatabase.h"
 #include "ItemManager.h"
 #include "EntityManager.h"
 #include "CollisionManager.h"
-#include "ItemDatabase.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 
-static const char* TILESET = "Images/Tiles.png";
+static const char* TILESET = "Resources/Images/Tiles.png";
 static const char* BACKGROUND = "Resources/Images/Backdrop.png";
 static const char* MAP = "Resources/Images/Map.png";
 
@@ -77,9 +77,10 @@ void GameStatePlaying::setup() {
 	inventory->setupInventory(8, 8);
 	mEntityManager->addEntity(inventory);
 
-	Item* item = new Item(0, 150);
+	Item* item = new Item(ItemDatabase::getInstance().getItemInfoByName("Testobject")->ID, 150);
 	item->setRenderLayer(50);
 	mEntityManager->addEntity(item);
+	inventory->addItem(item);
 
 	cursor->initalize(mEventManager, mWindow);
 	player->setCursor(cursor);

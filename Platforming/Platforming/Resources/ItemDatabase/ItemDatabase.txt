@@ -1,1 +1,2 @@
-Bucket 2 2 99 bucket.png Its a bucket, OK?!
+Bucket 2 2 1 Bucket.png Its a bucket, OK?!
+Testobject 1 1 99 Test.png Just a test object

@@ -5,24 +5,23 @@
 #include<SFML/System/Time.hpp>
 
 Item::Item(int itemID) :
-	CollidableEntityDefault(),
-	mVelocity(0.0f, 0.0f), mItemID(itemID),
-	mStackSize(1),
-	mItemInfo(&ItemDatabase::getInstance().getItemInfo(itemID)) {
+	Item(itemID, 1) {
 	setShitUp();
 }
 
 Item::Item(int itemID, int stackSize) :
 	CollidableEntityDefault(),
-	mVelocity(0.0f, 0.0f), mItemID(itemID),
+	mVelocity(0.0f, 0.0f),
 	mStackSize(stackSize),
-	mItemInfo(&ItemDatabase::getInstance().getItemInfo(itemID)) {
+	mItemInfo(ItemDatabase::getInstance().getItemInfo(itemID)) {
 	setShitUp();
 }
 
 void Item::setShitUp() {
 	mSprite.setTexture(ResourceManager::getInstance().getTexture(mItemInfo->imageFilename));
+	mSprite.setTextureRect(sf::IntRect(0, 0, 32 * mItemInfo->width, 32 * mItemInfo->height));
 	mStackText.setCharacterSize(8);
+	mStackText.setString(sf::String((uint32_t)mStackSize));
 }
 
 Item::~Item() {
@@ -84,10 +83,6 @@ void Item::addToStack(int size) {
 void Item::setMaxStack() {
 	mStackSize = mItemInfo->maxStack;
 	mStackText.setString(sf::String((uint32_t)mStackSize));
-}
-
-int Item::getItemID() const {
-	return mItemID;
 }
 
 void Item::setDrawMe(bool toDraw) {
