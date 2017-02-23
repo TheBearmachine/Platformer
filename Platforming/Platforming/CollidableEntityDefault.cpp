@@ -3,8 +3,7 @@
 #include "VectorMath.h"
 
 CollidableEntityDefault::CollidableEntityDefault() :
-	mGarbage(false), mSprite(sf::Vector2f(32, 32))
-{
+	mGarbage(false), mSprite(sf::Vector2f(32, 32)) {
 	mHitboxShape = new sf::RectangleShape(mSprite);
 	// Remove later
 	//mSprite.setOutlineThickness(5.0f);
@@ -31,15 +30,14 @@ void CollidableEntityDefault::kill() {
 	mGarbage = true;
 }
 
-void CollidableEntityDefault::setSprite(sf::Vector2f size)
-{
+void CollidableEntityDefault::setSprite(sf::Vector2f size) {
 	mSprite = sf::RectangleShape(size);
 	delete mHitboxShape;
 	mHitboxShape = new sf::RectangleShape(mSprite);
 	updateAxes();
 }
 
-void CollidableEntityDefault::setSprite(float width, float height){
+void CollidableEntityDefault::setSprite(float width, float height) {
 	mSprite = sf::RectangleShape({ width, height });
 	delete mHitboxShape;
 	mHitboxShape = new sf::RectangleShape(mSprite);
@@ -69,7 +67,7 @@ sf::Shape* CollidableEntityDefault::getNarrowHitbox() const {
 	return nullptr;
 }
 
-void CollidableEntityDefault::updateAxes(){
+void CollidableEntityDefault::updateAxes() {
 	mAxes.clear();
 	std::size_t pointCount = mHitboxShape->getPointCount();
 	for (std::size_t i = 0; i < pointCount; i++) {

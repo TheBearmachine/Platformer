@@ -21,7 +21,7 @@ void Wall::setVertex(int num) {
 	mQuadVertices = num;
 }
 
-void Wall::setCollisionCat(CollideCategory cat){
+void Wall::setCollisionCat(CollideCategory cat) {
 	mCat = cat;
 }
 

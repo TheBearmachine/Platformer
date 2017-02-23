@@ -8,6 +8,7 @@
 class EventManager;
 class CollisionManager;
 class EntityManager;
+class ItemManager;
 class Camera;
 namespace sf {
 	class RenderWindow;
@@ -28,6 +29,7 @@ public:
 private:
 	EventManager* mEventManager;
 	CollisionManager* mCollisionManager;
+	ItemManager* mItemManager;
 	EntityManager* mEntityManager;
 	sf::RenderWindow* mWindow;
 	Camera* mCamera;

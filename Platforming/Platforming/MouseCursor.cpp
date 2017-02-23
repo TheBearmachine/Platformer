@@ -2,11 +2,12 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include "EventManager.h"
+#include "Inventory.h"
 
 static const char* TEXTURE = "Images/MousePointer.png";
 
-MouseCursor::MouseCursor():
-mTexture(), mSprite(){
+MouseCursor::MouseCursor() :
+	mTexture(), mSprite() {
 	mCat = CollideCategory::CURSOR;
 	mTexture.loadFromFile(TEXTURE);
 	mSprite.setTexture(mTexture);
@@ -17,14 +18,13 @@ MouseCursor::~MouseCursor() {
 
 }
 
-void MouseCursor::initalize(Entity* player, EventManager* eventManager, sf::RenderWindow* window) {
-	mPlayer = player;
+void MouseCursor::initalize(EventManager* eventManager, sf::RenderWindow* window) {
 	mEventManager = eventManager;
 	mWindow = window;
 	mEventManager->registerObserver(this, sf::Event::MouseMoved);
 }
 
-void MouseCursor::finalize(){
+void MouseCursor::finalize() {
 	mEventManager->unregisterObserver(this, sf::Event::MouseMoved);
 }
 
@@ -46,5 +46,6 @@ void MouseCursor::observe(const sf::Event& _event) {
 	case sf::Event::MouseMoved:
 		setPosition((float)_event.mouseMove.x, (float)_event.mouseMove.y);
 		break;
+
 	}
 }

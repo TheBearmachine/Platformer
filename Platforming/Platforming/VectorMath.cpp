@@ -23,7 +23,7 @@ sf::Vector2f VectorMath::normalizeVector(const sf::Vector2f& vector) {
 		return sf::Vector2f(0, 0);
 	}
 	if (getVectorLengthSq(vector) == 1) return vector;
-	float factor = 1 / getVectorLength(vector);
+	float factor = 1.0f / getVectorLength(vector);
 	return sf::Vector2f(vector.x*factor, vector.y*factor);
 }
 

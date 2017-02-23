@@ -125,6 +125,7 @@
     <ClCompile Include="CollidableEntity.cpp" />
     <ClCompile Include="CollidableEntityDefault.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="Constants.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="EventManager.cpp" />
@@ -132,6 +133,9 @@
     <ClCompile Include="GameStatePlaying.cpp" />
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="InventorySlot.cpp" />
+    <ClCompile Include="Item.cpp" />
+    <ClCompile Include="ItemDatabase.cpp" />
+    <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MapGenerator.cpp" />
     <ClCompile Include="MouseCursor.cpp" />
@@ -158,6 +162,9 @@
     <ClInclude Include="GameStatePlaying.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="InventorySlot.h" />
+    <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemDatabase.h" />
+    <ClInclude Include="ItemManager.h" />
     <ClInclude Include="MapGenerator.h" />
     <ClInclude Include="MouseCursor.h" />
     <ClInclude Include="Player.h" />
@@ -166,6 +173,9 @@
     <ClInclude Include="TileMap.h" />
     <ClInclude Include="VectorMath.h" />
     <ClInclude Include="Wall.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Image.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

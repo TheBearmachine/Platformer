@@ -1,5 +1,6 @@
 #include "EntityManager.h"
 #include "Entity.h"
+#include "ItemManager.h"
 #include <map>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Time.hpp>
@@ -14,21 +15,21 @@ EntityManager::~EntityManager() {
 	internalCleanup();
 }
 
-void EntityManager::addEntity(Entity* entity, int layer) {
-	mEntities.push_back(IntEntityPair{ layer, entity });
+void EntityManager::addEntity(Entity* entity) {
+	mEntities.push_back(entity);
 }
 
-void EntityManager::updateEntities(const sf::Time & deltaTime) {
-	std::vector<IntEntityPair> temp(mEntities);
+void EntityManager::updateEntities(const sf::Time& deltaTime) {
+	std::vector<Entity*> temp(mEntities);
 	for (auto it : temp) {
-		it.second->tick(deltaTime);
+		it->tick(deltaTime);
 	}
 }
 
 void EntityManager::renderElements(sf::RenderWindow & window) {
 	std::map<int, std::vector<Entity*>> mappy;
 	for (auto e : mEntities) {
-		mappy[e.first].push_back(e.second);
+		mappy[e->getRenderLayer()].push_back(e);
 	}
 	sf::View prevView = window.getView();
 	sf::View GUIView = sf::View(sf::FloatRect(0, 0, (float)window.getSize().x, (float)window.getSize().y));
@@ -52,10 +53,10 @@ void EntityManager::renderElements(sf::RenderWindow & window) {
 }
 
 void EntityManager::garbageCollection() {
-	std::vector<IntEntityPair> temp;
+	std::vector<Entity*> temp;
 	for (auto e : mEntities) {
-		if (e.second->garbage())
-			delete e.second;
+		if (e->garbage())
+			delete e;
 		else
 			temp.push_back(e);
 	}
@@ -64,7 +65,7 @@ void EntityManager::garbageCollection() {
 
 void EntityManager::internalCleanup() {
 	while (!mEntities.empty()) {
-		delete mEntities.back().second;
+		delete mEntities.back();
 		mEntities.pop_back();
 	}
 }

@@ -4,7 +4,7 @@
 #include "CollidableEntity.h"
 #include <SFML/Graphics/RectangleShape.hpp>
 
-class CollidableEntityDefault : public CollidableEntity{
+class CollidableEntityDefault : public CollidableEntity {
 public:
 	CollidableEntityDefault();
 	~CollidableEntityDefault();
@@ -26,6 +26,7 @@ protected:
 	virtual void updateAxes();
 
 	bool mGarbage;
+	int mRenderLayer;
 	sf::RectangleShape mSprite;
 	sf::Shape* mHitboxShape;
 	CollideCategory mCat;

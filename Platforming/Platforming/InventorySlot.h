@@ -11,6 +11,8 @@ public:
 	~InventorySlot();
 
 	void setTexture(const char* filename);
+	Item* getContent();
+	void setContent(Item* item);
 
 	virtual void tick(const sf::Time & deltaTime) override;
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
@@ -19,8 +21,8 @@ public:
 
 private:
 	sf::Sprite mBackground;
-	//sf::Sprite mContentIcon;
 	Item* mContent;
 
+	int mRenderLayer;
 	bool mGarbage;
 };

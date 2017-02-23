@@ -1,11 +1,19 @@
 #pragma once
+
+#include <SFML/System/Vector2.hpp>
+
 namespace Constants {
 	namespace Block {
-		const int Height = 32;
-		const int Width = 32;
+		extern const int Height;
+		extern const int Width;
 	}
 	namespace Map {
-		const int Width = 512;
-		const int Height = 128;
+		extern const int Width;
+		extern const int Height;
+	}
+	namespace Physics {
+		extern const float Gravity;
+		extern const float ImpactBounce;
+		extern const sf::Vector2f TerminalVelocity;
 	}
 }

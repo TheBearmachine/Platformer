@@ -15,6 +15,14 @@ void InventorySlot::setTexture(const char* filename) {
 	mBackground.setTexture(ResourceManager::getInstance().getTexture(filename));
 }
 
+Item* InventorySlot::getContent() {
+	return mContent;
+}
+
+void InventorySlot::setContent(Item* item) {
+	mContent = item;
+}
+
 void InventorySlot::tick(const sf::Time& deltaTime) {
 
 }
@@ -22,8 +30,6 @@ void InventorySlot::tick(const sf::Time& deltaTime) {
 void InventorySlot::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.transform *= getTransform();
 	target.draw(mBackground, states);
-	/*if (mContentIcon.getTexture() != NULL)
-		target.draw(mContentIcon);*/
 }
 
 bool InventorySlot::garbage() const {

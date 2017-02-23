@@ -1,5 +1,6 @@
 #include "CollisionManager.h"
 #include "TileMap.h"
+#include "Item.h"
 #include "VectorMath.h"
 #include "Constants.h"
 #include <SFML/Graphics/Shape.hpp>
@@ -51,25 +52,17 @@ std::pair<float, float> getProjection(const sf::Shape& shape, sf::Vector2f& axis
 
 void CollisionManager::detectCollisions() {
 	sf::FloatRect bounds(mWindow->mapPixelToCoords({ 0, 0 }),
-		mWindow->getView().getSize());
+						 mWindow->getView().getSize());
 	bounds.left -= 50.0f;
 	bounds.top -= 50.0f;
 	bounds.height += 100.0f;
 	bounds.width += 100.0f;
-	//TileMap::getWallHashTable();
-
 
 	//Culls collision to only account for active against static so that
 	//things like walls arent checked against eachother
 	std::stack<std::pair<CollidableEntity*, CollidableEntity*>> colliding;
 
 	CollidableVector staticCollidables;
-	/*for (std::size_t i = 0; i < mStaticCollidables.size(); i++) {
-		if (mStaticCollidables[i]->getCategory() == CollidableEntity::CollideCategory::WALL &&
-			bounds.contains(mStaticCollidables[i]->getPosition()))
-			staticCollidables.push_back(mStaticCollidables[i]);
-
-	}*/
 	for (std::size_t i = 0; i < mDynamicCollidables.size(); i++) {
 		CollidableEntity* collidable0 = mDynamicCollidables[i];
 		for (std::size_t j = i + 1; j < mDynamicCollidables.size(); j++) {
@@ -92,6 +85,19 @@ void CollisionManager::detectCollisions() {
 			}
 		}
 
+		// Check dynamic entities against items
+		for (std::size_t j = 0; j < mItems.size(); j++) {
+			CollidableEntity* collidable1 = mItems[j];
+			Item* item;
+			item = dynamic_cast<Item*>(collidable1);
+			if (item->getAnchor() == nullptr &&
+				(collidable0->getHitbox().intersects(collidable1->getHitbox()) &&
+				(collidable0->getCategory() != collidable1->getCategory()))) {
+				colliding.push(std::make_pair(collidable0, collidable1));
+			}
+		}
+
+		// Check Dynamic entities against static entities
 		for (std::size_t j = 0; j < staticCollidables.size(); j++) {
 			CollidableEntity *collidable1 = staticCollidables[j];
 			if (collidable0->getHitbox().intersects(collidable1->getHitbox()) && (collidable0->getCategory() != collidable1->getCategory())) {

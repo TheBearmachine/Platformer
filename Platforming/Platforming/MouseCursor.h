@@ -6,17 +6,19 @@
 #include "SFML/Graphics/Sprite.hpp"
 #include <SFML/Graphics/Texture.hpp>
 
-class EventManager;
-namespace sf{
+namespace sf {
 	class RenderWindow;
 }
+
+class EventManager;
+class Inventory;
 
 class MouseCursor :public CollidableEntityDefault, public EventObserver {
 public:
 	MouseCursor();
 	~MouseCursor();
 
-	void initalize(Entity* player, EventManager* eventManager, sf::RenderWindow* window);
+	void initalize(EventManager* eventManager, sf::RenderWindow* window);
 	void finalize();
 	virtual void tick(const sf::Time & deltaTime) override;
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
@@ -28,7 +30,7 @@ private:
 	sf::Texture mTexture;
 	sf::RenderWindow* mWindow;
 	EventManager* mEventManager;
-	Entity* mPlayer;
+
 
 };
 

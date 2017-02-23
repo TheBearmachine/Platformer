@@ -5,7 +5,7 @@
 #include <SFML/Graphics/Shape.hpp>
 #include <vector>
 
-class CollidableEntity : public Entity{
+class CollidableEntity : public Entity {
 public:
 	enum CollideCategory {
 		PLAYER,

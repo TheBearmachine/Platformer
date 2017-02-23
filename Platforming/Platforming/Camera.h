@@ -3,15 +3,15 @@
 
 #include "Entity.h"
 
-namespace sf{
+namespace sf {
 	class RenderWindow;
 }
 
-class Camera : public Entity{
+class Camera : public Entity {
 public:
 	Camera(sf::RenderWindow* window);
 	~Camera();
-	bool setup(Entity* player, sf::Vector2u mapBounds);
+	bool setup(Entity* player, sf::Vector2f mapBounds);
 
 	virtual void tick(const sf::Time & deltaTime) override;
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
@@ -21,6 +21,6 @@ public:
 private:
 	Entity* mPlayer;
 	sf::RenderWindow* mWindow;
-	sf::Vector2u mBounds;
+	sf::Vector2f mBounds;
 };
 #endif // !_INCLUDED_CAMERA_H_
