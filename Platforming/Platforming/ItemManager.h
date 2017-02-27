@@ -21,5 +21,4 @@ private:
 	EventManager* mEventManager;
 	Item* mCursorItem;
 
-	// Inherited via EventObserver
 };

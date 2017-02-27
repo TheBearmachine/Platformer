@@ -26,9 +26,6 @@ void ItemManager::observe(const sf::Event& _event) {
 	switch (_event.type) {
 	case sf::Event::MouseButtonPressed: {
 		// If inventory is closed, do nothing
-		if (!mInventory->getActive())
-			return;
-
 		float x = mCursor->getPosition().x;
 		float xmin = mInventory->getPosition().x;
 		float xmax = mInventory->getWidth() + xmin;
@@ -37,7 +34,8 @@ void ItemManager::observe(const sf::Event& _event) {
 		float ymax = mInventory->getHeight() + ymin;
 
 		// Check if the cursor is within the inventory's boundaries
-		if (x > xmin && x < xmax && y > ymin && y < ymax) {
+		// and also active (open)
+		if (!mInventory->getActive() && x > xmin && x < xmax && y > ymin && y < ymax) {
 			// Then convert coordinates into inventory slot id
 			float slotWidth = mInventory->getWidth() / (float)mInventory->getFrameNrX();
 			float slotHeight = mInventory->getHeight() / (float)mInventory->getFrameNrY();
@@ -57,7 +55,7 @@ void ItemManager::observe(const sf::Event& _event) {
 				}
 			}
 			else {
-				// If mouse is holding an item, drop it
+				// If mouse is holding an item, drop it into the itemslot
 				if (invSlot->getContent() == nullptr) {
 					mCursorItem->anchorToEntity(invSlot);
 					invSlot->setContent(mCursorItem);
@@ -73,6 +71,12 @@ void ItemManager::observe(const sf::Event& _event) {
 					mCursorItem->anchorToEntity(mCursor);
 				}
 			}
+		}
+
+		// If the mouse is outside the inventory window and holding an item,
+		// then drop it into the world
+		else if (mCursorItem != nullptr) {
+
 		}
 		break;
 	}

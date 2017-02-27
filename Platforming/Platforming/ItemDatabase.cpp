@@ -9,7 +9,6 @@ static const char* ITEM_IMAGES_PATH = "Resources/Images/Items/";
 ItemDatabase::ItemDatabase() {
 	std::ifstream infile(DB_FILE);
 	std::string line, name, desc, imageFilename;
-	char c;
 	int width, height, maxStack;
 	int index = 0;
 	std::istringstream iss;

@@ -74,7 +74,7 @@ void GameStatePlaying::setup() {
 	inventory->setupInventory(8, 8);
 	mEntityManager->addEntity(inventory);
 
-	Item* item = new Item(ItemDatabase::getInstance().getItemInfoByName("Testobject")->ID, 150);
+	Item* item = new Item(ItemDatabase::getInstance().getItemInfoByName("Testobject")->ID, 450);
 	item->setRenderLayer(50);
 	mEntityManager->addEntity(item);
 	inventory->addItem(item);

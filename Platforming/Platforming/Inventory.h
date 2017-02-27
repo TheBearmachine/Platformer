@@ -23,7 +23,7 @@ public:
 	float getWidth() const;
 	float getHeight() const;
 	bool getActive() const;
-	void addItem(Item* item);
+	void addItem(Item* item, size_t startpoint = 0);
 	InventorySlot* getInventorySlot(int index);
 
 	virtual void tick(const sf::Time & deltaTime) override;

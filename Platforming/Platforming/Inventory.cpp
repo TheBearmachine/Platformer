@@ -71,10 +71,10 @@ bool Inventory::getActive() const {
 	return mActive;
 }
 
-void Inventory::addItem(Item* item) {
+void Inventory::addItem(Item* item, size_t startpoint) {
 	if (item == nullptr) return;
 
-	for (size_t i = 0; i < mInventorySlots.size(); i++) {
+	for (size_t i = startpoint; i < mInventorySlots.size(); i++) {
 		Item* invItem = mInventorySlots[i].getContent();
 
 		// If there is no item add the new item and check if the
@@ -91,17 +91,17 @@ void Inventory::addItem(Item* item) {
 				item->setMaxStack();
 				mEntityManager->addEntity(newItem);
 				newItem->setRenderLayer(item->getRenderLayer());
-				addItem(newItem);
+				addItem(newItem, i);
 			}
 			return;
 		}
 
-		// If the item has the same ID and is at less than max stacks
-		// then merge the items
+		// If the inventory item has the same ID and is at less than
+		// max stacks then merge the items
 		else if (invItem->getItemInfo()->ID == item->getItemInfo()->ID &&
-				 invItem->getItemInfo()->maxStack < item->getStackSize()) {
+			invItem->getItemInfo()->maxStack < invItem->getStackSize()) {
 			// If there are more stacks in total than the max stack, create a new
-			// instance and
+			// instance and recursively try and add it
 			item->setRenderLayer(110);
 			if (invItem->getStackSize() + item->getStackSize() > invItem->getItemInfo()->maxStack) {
 				int newSize = invItem->getStackSize() + item->getStackSize() - invItem->getItemInfo()->maxStack;
@@ -109,14 +109,17 @@ void Inventory::addItem(Item* item) {
 				Item* newItem = new Item(item->getItemInfo()->ID, newSize);
 				newItem->setRenderLayer(item->getRenderLayer());
 				mEntityManager->addEntity(newItem);
-				addItem(newItem);
+				addItem(newItem, i);
 			}
 			else {
+				invItem->addToStack(item->getStackSize());
 				item->garbage();
 			}
 			return;
 		}
 	}
+	// If there is no room in the inventory then throw the item out
+	// TODO
 }
 
 InventorySlot* Inventory::getInventorySlot(int index) {
