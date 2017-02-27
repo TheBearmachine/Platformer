@@ -38,6 +38,7 @@ void ItemManager::observe(const sf::Event& _event) {
 
 		// Check if the cursor is within the inventory's boundaries
 		if (x > xmin && x < xmax && y > ymin && y < ymax) {
+			// Then convert coordinates into inventory slot id
 			float slotWidth = mInventory->getWidth() / (float)mInventory->getFrameNrX();
 			float slotHeight = mInventory->getHeight() / (float)mInventory->getFrameNrY();
 			x = x - xmin;
@@ -56,9 +57,21 @@ void ItemManager::observe(const sf::Event& _event) {
 				}
 			}
 			else {
-				mCursorItem->anchorToEntity(invSlot);
-				invSlot->setContent(mCursorItem);
-				mCursorItem = nullptr;
+				// If mouse is holding an item, drop it
+				if (invSlot->getContent() == nullptr) {
+					mCursorItem->anchorToEntity(invSlot);
+					invSlot->setContent(mCursorItem);
+					mCursorItem = nullptr;
+				}
+				// 
+				else {
+					Item* temp;
+					temp = mCursorItem;
+					mCursorItem->anchorToEntity(invSlot);
+					mCursorItem = invSlot->getContent();
+					invSlot->setContent(temp);
+					mCursorItem->anchorToEntity(mCursor);
+				}
 			}
 		}
 		break;

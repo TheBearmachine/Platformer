@@ -4,16 +4,19 @@
 
 namespace Constants {
 	namespace Block {
-		extern const int Height;
-		extern const int Width;
+		static const int Height = 32;
+		static const int Width = 32;
 	}
 	namespace Map {
-		extern const int Width;
-		extern const int Height;
+		static const int Width = 512;
+		static const int Height = 128;
 	}
 	namespace Physics {
-		extern const float Gravity;
-		extern const float ImpactBounce;
-		extern const sf::Vector2f TerminalVelocity;
+		static const float Gravity = 5.0f;
+		static const float ImpactBounce = 0.33f;
+		static const sf::Vector2f TerminalVelocity = { 3.0f, 4.0f };
+	}
+	namespace Files {
+		static const char* Default_Font = "Resources/Fonts/Candara.ttf";
 	}
 }

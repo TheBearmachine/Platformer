@@ -37,8 +37,8 @@ void Inventory::setupInventory(int width, int height) {
 
 	for (int i = 0; i < mFrameNrY; i++) {
 		for (int j = 0; j < mFrameNrX; j++) {
-			sf::Vector2f vec2((float)tex->getSize().x*(float)i,
-				(float)tex->getSize().y*(float)j);
+			sf::Vector2f vec2((float)tex->getSize().x*(float)j,
+				(float)tex->getSize().y*(float)i);
 			InventorySlot slot = InventorySlot();
 			slot.setTexture(TEXTURE_FRAME);
 			slot.setPosition(vec2 + getPosition());
@@ -77,19 +77,29 @@ void Inventory::addItem(Item* item) {
 	for (size_t i = 0; i < mInventorySlots.size(); i++) {
 		Item* invItem = mInventorySlots[i].getContent();
 
-		// If there is no item add the new item
+		// If there is no item add the new item and check if the
+		// item exceeds allowed inventory stack limit
 		if (invItem == nullptr) {
 			item->setRenderLayer(110);
 			item->anchorToEntity(&mInventorySlots[i]);
 			mInventorySlots[i].setContent(item);
 			item->anchorToEntity(&mInventorySlots[i]);
+
+			if (item->getItemInfo()->maxStack < item->getStackSize()) {
+				int newSize = item->getStackSize() - item->getItemInfo()->maxStack;
+				Item* newItem = new Item(item->getItemInfo()->ID, newSize);
+				item->setMaxStack();
+				mEntityManager->addEntity(newItem);
+				newItem->setRenderLayer(item->getRenderLayer());
+				addItem(newItem);
+			}
 			return;
 		}
 
 		// If the item has the same ID and is at less than max stacks
 		// then merge the items
 		else if (invItem->getItemInfo()->ID == item->getItemInfo()->ID &&
-			invItem->getItemInfo()->maxStack < item->getStackSize()) {
+				 invItem->getItemInfo()->maxStack < item->getStackSize()) {
 			// If there are more stacks in total than the max stack, create a new
 			// instance and
 			item->setRenderLayer(110);
@@ -124,9 +134,7 @@ void Inventory::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(mBackground, states1);
 
 	for (auto i : mInventorySlots) {
-		sf::RenderStates states2(states);
-		states2.transform *= i.getTransform();
-		target.draw(i, states2);
+		target.draw(i, states);
 	}
 }
 

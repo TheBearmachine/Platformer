@@ -6,13 +6,14 @@
 
 Item::Item(int itemID) :
 	Item(itemID, 1) {
-	setShitUp();
+
 }
 
 Item::Item(int itemID, int stackSize) :
 	CollidableEntityDefault(),
 	mVelocity(0.0f, 0.0f),
 	mStackSize(stackSize),
+	mStackText("", ResourceManager::getInstance().getFont(Constants::Files::Default_Font)),
 	mItemInfo(ItemDatabase::getInstance().getItemInfo(itemID)) {
 	setShitUp();
 }
@@ -20,8 +21,11 @@ Item::Item(int itemID, int stackSize) :
 void Item::setShitUp() {
 	mSprite.setTexture(ResourceManager::getInstance().getTexture(mItemInfo->imageFilename));
 	mSprite.setTextureRect(sf::IntRect(0, 0, 32 * mItemInfo->width, 32 * mItemInfo->height));
-	mStackText.setCharacterSize(8);
-	mStackText.setString(sf::String((uint32_t)mStackSize));
+	mStackText.setString(std::to_string(mStackSize));
+	mStackText.setOutlineThickness(1.0f);
+	mStackText.setOutlineColor(sf::Color::Black);
+	mStackText.setFillColor(sf::Color::White);
+	mStackText.setCharacterSize(12);
 }
 
 Item::~Item() {
@@ -45,7 +49,8 @@ void Item::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	else
 		states.transform *= getTransform();
 	target.draw(mSprite, states);
-	target.draw(mStackText, states);
+	if (mStackSize > 1)
+		target.draw(mStackText, states);
 }
 
 void Item::collide(CollidableEntity* collidable, const sf::Vector2f& moveAway) {
@@ -77,12 +82,12 @@ int Item::getStackSize() const {
 
 void Item::addToStack(int size) {
 	mStackSize = std::max(mStackSize += size, 1);
-	mStackText.setString(sf::String((uint32_t)mStackSize));
+	mStackText.setString(std::to_string(mStackSize));
 }
 
 void Item::setMaxStack() {
 	mStackSize = mItemInfo->maxStack;
-	mStackText.setString(sf::String((uint32_t)mStackSize));
+	mStackText.setString(std::to_string(mStackSize));
 }
 
 void Item::setDrawMe(bool toDraw) {

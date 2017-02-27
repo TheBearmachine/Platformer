@@ -19,9 +19,6 @@ static const char* TILESET = "Resources/Images/Tiles.png";
 static const char* BACKGROUND = "Resources/Images/Backdrop.png";
 static const char* MAP = "Resources/Images/Map.png";
 
-static const int HEIGHT = 128;
-static const int WIDTH = 512;
-
 GameStatePlaying::GameStatePlaying(sf::RenderWindow* window, EventManager* eventManager) :
 	mWindow(window), mEventManager(eventManager), mPaused(false),
 	mEntityManager(new EntityManager()) {
@@ -87,9 +84,9 @@ void GameStatePlaying::setup() {
 
 	mItemManager->initialize(cursor, inventory);
 
-	mMapHeight = HEIGHT;
-	mMapWidth = WIDTH;
-	int levelAlso[WIDTH * HEIGHT];
+	mMapHeight = Constants::Map::Height;
+	mMapWidth = Constants::Map::Width;
+	int levelAlso[Constants::Map::Width * Constants::Map::Height];
 	MapGenerator::generateMap(levelAlso, mMapWidth, mMapHeight);
 	TileMap* tileMap = new TileMap(mCollisionManager);
 	if (!tileMap->load(TILESET, sf::Vector2u(32, 32), &levelAlso[0], mMapWidth, mMapHeight))
