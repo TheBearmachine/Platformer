@@ -16,6 +16,7 @@ public:
 	virtual void tick(const sf::Time& deltaTime) override;
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	virtual void collide(CollidableEntity* collidable, const sf::Vector2f& moveAway) override;
+	virtual void setRenderLayer(int layer) override;
 
 	ItemDatabase::ItemStruct* getItemInfo();
 	void anchorToEntity(Entity* entity);
@@ -24,6 +25,8 @@ public:
 	void addToStack(int size);
 	void setMaxStack();
 	void setDrawMe(bool toDraw);
+	int getInventorySlot() const;
+	void setInventorySlot(int slot);
 
 private:
 	void setShitUp();
@@ -35,4 +38,5 @@ private:
 	ItemDatabase::ItemStruct* mItemInfo;
 	bool mDrawMe;
 	int mStackSize;
+	int minventorySlot;
 };

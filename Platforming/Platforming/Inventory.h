@@ -24,6 +24,9 @@ public:
 	float getHeight() const;
 	bool getActive() const;
 	void addItem(Item* item, size_t startpoint = 0);
+	Item* addItemToSlot(Item* item, int slot);
+	Item* takeItemFromSlot(int slot, Entity* anchor);
+	Item* swapItems(Item* item, int slot, Entity* anchor);
 	InventorySlot* getInventorySlot(int index);
 
 	virtual void tick(const sf::Time & deltaTime) override;
@@ -33,6 +36,9 @@ public:
 	virtual void observe(const sf::Event & _event) override;
 
 private:
+	std::vector<int> getArea(Item* item, int slot);
+	int getNewSlot(int slot, int width, int height);
+
 	std::vector<InventorySlot> mInventorySlots;
 	sf::RectangleShape mBackground;
 	EventManager* mEventManager;

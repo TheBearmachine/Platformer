@@ -46,28 +46,19 @@ void ItemManager::observe(const sf::Event& _event) {
 
 			int slot = slotX + mInventory->getFrameNrX()*slotY;
 			InventorySlot* invSlot = mInventory->getInventorySlot(slot);
-			Item* item;
-			if (mCursorItem == nullptr) {
-				if ((item = invSlot->getContent()) != nullptr) {
-					mCursorItem = item;
-					item->anchorToEntity(mCursor);
-					invSlot->setContent(nullptr);
-				}
+			Item* invItem = invSlot->getContent();
+
+			// If no item is held and invSlot is an item then
+			// take item from inventory slot and place on cursor
+			if (mCursorItem == nullptr && invItem != nullptr) {
+				mCursorItem = mInventory->takeItemFromSlot(slot, mCursor);
 			}
-			else {
-				// If mouse is holding an item, drop it into the itemslot
-				if (invSlot->getContent() == nullptr) {
-					mCursorItem->anchorToEntity(invSlot);
-					invSlot->setContent(mCursorItem);
-					mCursorItem = nullptr;
-				}
-				// 
-				else {
-					Item* temp;
-					temp = mCursorItem;
-					mCursorItem->anchorToEntity(invSlot);
-					mCursorItem = invSlot->getContent();
-					invSlot->setContent(temp);
+			// If mouse is holding an item and invSlot is empty, drop it into the itemslot
+			else if (mCursorItem != nullptr && invItem != nullptr){
+				mCursorItem = mInventory->addItemToSlot(mCursorItem, slot);
+
+
+				if (mCursorItem != nullptr) {
 					mCursorItem->anchorToEntity(mCursor);
 				}
 			}
@@ -76,7 +67,7 @@ void ItemManager::observe(const sf::Event& _event) {
 		// If the mouse is outside the inventory window and holding an item,
 		// then drop it into the world
 		else if (mCursorItem != nullptr) {
-
+			// TODO
 		}
 		break;
 	}

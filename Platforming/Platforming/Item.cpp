@@ -13,6 +13,7 @@ Item::Item(int itemID, int stackSize) :
 	CollidableEntityDefault(),
 	mVelocity(0.0f, 0.0f),
 	mStackSize(stackSize),
+	minventorySlot(-1),
 	mStackText("", ResourceManager::getInstance().getFont(Constants::Files::Default_Font)),
 	mItemInfo(ItemDatabase::getInstance().getItemInfo(itemID)) {
 	setShitUp();
@@ -49,7 +50,7 @@ void Item::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	else
 		states.transform *= getTransform();
 	target.draw(mSprite, states);
-	if (mStackSize > 1)
+	if (mItemInfo->maxStack > 1)
 		target.draw(mStackText, states);
 }
 
@@ -61,6 +62,14 @@ void Item::collide(CollidableEntity* collidable, const sf::Vector2f& moveAway) {
 	else if (collidable->getCategory() == CollideCategory::FLOOR) {
 		mVelocity.y = 0.0f;
 		move(moveAway);
+	}
+}
+
+void Item::setRenderLayer(int layer) {
+	if (mAnchor != nullptr && layer == NULL)
+		mRenderLayer = mAnchor->getRenderLayer();
+	else {
+		mRenderLayer = layer;
 	}
 }
 
@@ -92,4 +101,12 @@ void Item::setMaxStack() {
 
 void Item::setDrawMe(bool toDraw) {
 	mDrawMe = toDraw;
+}
+
+int Item::getInventorySlot() const {
+	return minventorySlot;
+}
+
+void Item::setInventorySlot(int slot) {
+	minventorySlot = slot;
 }
