@@ -11,6 +11,7 @@ static const float ACCELLERATION = 2.7f;
 static const float JUMP_SPEED = 3.5f;
 
 Player::Player(sf::RenderWindow* window, EntityManager* entityManager) :
+	CollidableEntityDefault(EntityType::PLAYER),
 	mWindow(window), mEntityManager(entityManager),
 	mCanJump(false), mFriction(4.0) {
 	mSprite.setFillColor(sf::Color::Blue);

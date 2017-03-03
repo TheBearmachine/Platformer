@@ -35,7 +35,7 @@ void ItemManager::observe(const sf::Event& _event) {
 
 		// Check if the cursor is within the inventory's boundaries
 		// and also active (open)
-		if (!mInventory->getActive() && x > xmin && x < xmax && y > ymin && y < ymax) {
+		if (mInventory->getActive() && x > xmin && x < xmax && y > ymin && y < ymax) {
 			// Then convert coordinates into inventory slot id
 			float slotWidth = mInventory->getWidth() / (float)mInventory->getFrameNrX();
 			float slotHeight = mInventory->getHeight() / (float)mInventory->getFrameNrY();
@@ -53,14 +53,10 @@ void ItemManager::observe(const sf::Event& _event) {
 			if (mCursorItem == nullptr && invItem != nullptr) {
 				mCursorItem = mInventory->takeItemFromSlot(slot, mCursor);
 			}
-			// If mouse is holding an item and invSlot is empty, drop it into the itemslot
-			else if (mCursorItem != nullptr && invItem != nullptr){
-				mCursorItem = mInventory->addItemToSlot(mCursorItem, slot);
-
-
-				if (mCursorItem != nullptr) {
-					mCursorItem->anchorToEntity(mCursor);
-				}
+			// If mouse is holding an item then call for swap
+			else if (mCursorItem != nullptr) {
+				mCursorItem = mInventory->swapItems(mCursorItem, slot, mCursor);
+				int i = 0;
 			}
 		}
 

@@ -18,7 +18,7 @@ public:
 		IGNORE
 	};
 
-	CollidableEntity();
+	CollidableEntity(EntityType entityType);
 	virtual ~CollidableEntity();
 
 	virtual CollideCategory getCategory() const = 0;

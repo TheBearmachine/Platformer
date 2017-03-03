@@ -2,9 +2,11 @@
 #include "ResourceManager.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 
-InventorySlot::InventorySlot() :
+InventorySlot::InventorySlot(int index) :
+	Entity(INVENTORYSLOT),
+	mIndex(index),
 	mGarbage(false) {
-
+	setRenderLayer(110);
 }
 
 InventorySlot::~InventorySlot() {
@@ -21,6 +23,14 @@ Item* InventorySlot::getContent() {
 
 void InventorySlot::setContent(Item* item) {
 	mContent = item;
+}
+
+void InventorySlot::setIndex(int index) {
+	mIndex;
+}
+
+int InventorySlot::getIndex() const {
+	return mIndex;
 }
 
 void InventorySlot::tick(const sf::Time& deltaTime) {

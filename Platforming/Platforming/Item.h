@@ -17,6 +17,7 @@ public:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	virtual void collide(CollidableEntity* collidable, const sf::Vector2f& moveAway) override;
 	virtual void setRenderLayer(int layer) override;
+	virtual int getRenderLayer() const override;
 
 	ItemDatabase::ItemStruct* getItemInfo();
 	void anchorToEntity(Entity* entity);

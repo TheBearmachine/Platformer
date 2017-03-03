@@ -1,2 +1,4 @@
-Bucket 2 2 1 Bucket.png Its a bucket, OK?!
-Testobject 1 1 99 Test.png Just a test object
+Testobject 1 1 99 Test.png Just a test object.
+Bucket 2 2 1 Bucket.png Its a bucket, OK?
+Book 1 2 1 Book.png A book full of scriblings of an unknown language.
+Chest 3 2 1 Chest.png A chest to store all your hard earned treasures.

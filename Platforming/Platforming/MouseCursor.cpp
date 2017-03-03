@@ -7,6 +7,7 @@
 static const char* TEXTURE = "Resources/Images/MousePointer.png";
 
 MouseCursor::MouseCursor() :
+	CollidableEntityDefault(EntityType::UNUSED),
 	mTexture(), mSprite() {
 	mCat = CollideCategory::CURSOR;
 	mTexture.loadFromFile(TEXTURE);

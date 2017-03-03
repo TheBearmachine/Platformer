@@ -5,6 +5,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 Camera::Camera(sf::RenderWindow* window) :
+	Entity(UNUSED),
 	mWindow(window) {
 	/*sf::View view;
 	view.setSize(640, 480);

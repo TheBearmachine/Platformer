@@ -6,6 +6,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 TileMap::TileMap(CollisionManager* collisionManager) :
+	Entity(WALL),
 	mCollisionManager(collisionManager) {
 
 }

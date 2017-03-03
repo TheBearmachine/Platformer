@@ -1,6 +1,7 @@
 #include "Item.h"
 #include "Constants.h"
 #include "ResourceManager.h"
+#include "InventorySlot.h"
 #include <SFML/Graphics/RenderTarget.hpp>
 #include<SFML/System/Time.hpp>
 
@@ -10,7 +11,7 @@ Item::Item(int itemID) :
 }
 
 Item::Item(int itemID, int stackSize) :
-	CollidableEntityDefault(),
+	CollidableEntityDefault(EntityType::ITEM),
 	mVelocity(0.0f, 0.0f),
 	mStackSize(stackSize),
 	minventorySlot(-1),
@@ -66,11 +67,11 @@ void Item::collide(CollidableEntity* collidable, const sf::Vector2f& moveAway) {
 }
 
 void Item::setRenderLayer(int layer) {
-	if (mAnchor != nullptr && layer == NULL)
-		mRenderLayer = mAnchor->getRenderLayer();
-	else {
-		mRenderLayer = layer;
-	}
+	mRenderLayer = layer;
+}
+
+int Item::getRenderLayer() const {
+	return (mAnchor != nullptr ? std::min(mAnchor->getRenderLayer() + 1, 200) : mRenderLayer);
 }
 
 ItemDatabase::ItemStruct* Item::getItemInfo() {
@@ -79,6 +80,12 @@ ItemDatabase::ItemStruct* Item::getItemInfo() {
 
 void Item::anchorToEntity(Entity* entity) {
 	mAnchor = entity;
+	if (entity->getEntityType() == EntityType::INVENTORYSLOT) {
+		InventorySlot* invSlot = dynamic_cast<InventorySlot*>(entity);
+		minventorySlot = invSlot->getIndex();
+	}
+	else
+		minventorySlot = -1;
 }
 
 Entity* Item::getAnchor() const {

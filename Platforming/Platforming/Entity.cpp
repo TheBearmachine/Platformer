@@ -1,7 +1,8 @@
 #include "Entity.h"
 
-Entity::Entity(){
+Entity::Entity(EntityType entityType) :
+	mEntityType(entityType) {
 }
 
-Entity::~Entity(){
+Entity::~Entity() {
 }

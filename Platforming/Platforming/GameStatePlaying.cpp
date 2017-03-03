@@ -74,10 +74,24 @@ void GameStatePlaying::setup() {
 	inventory->setupInventory(8, 8);
 	mEntityManager->addEntity(inventory);
 
+
+	// Item Test
 	Item* item = new Item(ItemDatabase::getInstance().getItemInfoByName("Testobject")->ID, 450);
-	item->setRenderLayer(50);
+	item->setRenderLayer(110);
 	mEntityManager->addEntity(item);
 	inventory->addItem(item);
+
+	item = new Item(ItemDatabase::getInstance().getItemInfoByName("Chest")->ID, 1);
+	item->setRenderLayer(110);
+	mEntityManager->addEntity(item);
+	inventory->addItem(item);
+
+
+	item = new Item(ItemDatabase::getInstance().getItemInfoByName("Book")->ID, 2);
+	item->setRenderLayer(110);
+	mEntityManager->addEntity(item);
+	inventory->addItem(item);
+	// End item test
 
 	cursor->initalize(mEventManager, mWindow);
 	player->setCursor(cursor);

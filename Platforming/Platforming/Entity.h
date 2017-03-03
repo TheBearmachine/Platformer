@@ -10,7 +10,17 @@ namespace sf {
 
 class Entity : public sf::Drawable, public sf::Transformable {
 public:
-	Entity();
+	enum EntityType {
+		PLAYER,
+		ENEMY,
+		ITEM,
+		INVENTORYSLOT,
+		WALL,
+		UNUSED
+
+	};
+
+	Entity(EntityType entityType);
 	virtual ~Entity();
 
 	virtual void tick(const sf::Time& deltaTime) = 0;
@@ -19,9 +29,11 @@ public:
 	virtual void kill() = 0;
 	virtual int getRenderLayer() const { return mRenderLayer; }
 	virtual void setRenderLayer(int layer) { mRenderLayer = layer; }
+	EntityType getEntityType() const { return mEntityType; }
 
 protected:
 	int mRenderLayer;
+	const EntityType mEntityType;
 };
 
 #endif // !_INCLUDED_ENTITY_H_

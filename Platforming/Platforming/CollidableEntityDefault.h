@@ -6,7 +6,7 @@
 
 class CollidableEntityDefault : public CollidableEntity {
 public:
-	CollidableEntityDefault();
+	CollidableEntityDefault(EntityType entityType);
 	~CollidableEntityDefault();
 
 	virtual void tick(const sf::Time & deltaTime) = 0;
@@ -26,7 +26,6 @@ protected:
 	virtual void updateAxes();
 
 	bool mGarbage;
-	int mRenderLayer;
 	sf::RectangleShape mSprite;
 	sf::Shape* mHitboxShape;
 	CollideCategory mCat;

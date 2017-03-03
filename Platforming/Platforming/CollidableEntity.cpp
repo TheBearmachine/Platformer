@@ -1,9 +1,8 @@
 #include "CollidableEntity.h"
 
-CollidableEntity::CollidableEntity()
-{
+CollidableEntity::CollidableEntity(EntityType entityType) :
+	Entity(entityType) {
 }
 
-CollidableEntity::~CollidableEntity()
-{
+CollidableEntity::~CollidableEntity() {
 }

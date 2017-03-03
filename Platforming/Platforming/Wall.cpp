@@ -4,6 +4,7 @@
 #include <SFML/Window/Keyboard.hpp>
 
 Wall::Wall(TileMap* tileMap, int quadVertices, int arrayPos) :
+	CollidableEntityDefault(EntityType::WALL),
 	mTileMap(tileMap), mArrayPos(arrayPos) {
 	mCat = CollideCategory::WALL;
 	mQuadVertices = quadVertices;

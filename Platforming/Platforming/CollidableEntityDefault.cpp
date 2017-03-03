@@ -2,8 +2,9 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include "VectorMath.h"
 
-CollidableEntityDefault::CollidableEntityDefault() :
-	mGarbage(false), mSprite(sf::Vector2f(32, 32)) {
+CollidableEntityDefault::CollidableEntityDefault(EntityType entityType) :
+	mGarbage(false), mSprite(sf::Vector2f(32, 32)),
+	CollidableEntity(entityType) {
 	mHitboxShape = new sf::RectangleShape(mSprite);
 	// Remove later
 	//mSprite.setOutlineThickness(5.0f);

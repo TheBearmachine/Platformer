@@ -12,6 +12,7 @@ static const char* TEXTURE_FRAME = "Resources/Images/InventoryFrame.png";
 static const int ITEM_RENDER_LAYER = 110;
 
 Inventory::Inventory(EventManager* eventManager, EntityManager* entityManager) :
+	Entity(UNUSED),
 	mEventManager(eventManager),
 	mEntityManager(entityManager),
 	mInventorySlots(), mActive(false), mGarbage(false),
@@ -40,7 +41,7 @@ void Inventory::setupInventory(int width, int height) {
 		for (int j = 0; j < mFrameNrX; j++) {
 			sf::Vector2f vec2((float)tex->getSize().x*(float)j,
 				(float)tex->getSize().y*(float)i);
-			InventorySlot slot = InventorySlot();
+			InventorySlot slot = InventorySlot(j + i*mFrameNrX);
 			slot.setTexture(TEXTURE_FRAME);
 			slot.setPosition(vec2 + getPosition());
 			mInventorySlots.push_back(slot);
@@ -86,7 +87,8 @@ void Inventory::addItem(Item* item, size_t startpoint) {
 // Function for adding a item to a specific slot in the inventory
 Item* Inventory::addItemToSlot(Item* item, int slot) {
 	// If slot is out of bounds or there is no item then return immediately
-	if (slot > mFrameNrX * mFrameNrY || item == nullptr) return item;
+	if (slot > mFrameNrX * mFrameNrY || slot < 0 ||
+		item == nullptr) return item;
 
 	Item* invItem = mInventorySlots[slot].getContent();
 	int newSlot = getNewSlot(slot, item->getItemInfo()->width, item->getItemInfo()->height);
@@ -104,16 +106,16 @@ Item* Inventory::addItemToSlot(Item* item, int slot) {
 	// If there indeed was an empty space then add the item there
 	if (empty) {
 		item->anchorToEntity(&mInventorySlots[newSlot]);
-		item->setRenderLayer(NULL);
+		item->setRenderLayer(110);
 		for (size_t i = 0; i < indices.size(); i++)
 			mInventorySlots[indices[i]].setContent(item);
 
 		if (item->getItemInfo()->maxStack < item->getStackSize()) {
-			int newSize = item->getStackSize() - item->getItemInfo()->maxStack;
-			Item* newItem = new Item(item->getItemInfo()->ID, newSize);
+			int newStackSize = item->getStackSize() - item->getItemInfo()->maxStack;
+			Item* newItem = new Item(item->getItemInfo()->ID, newStackSize);
 			item->setMaxStack();
 			mEntityManager->addEntity(newItem);
-			newItem->setRenderLayer(NULL);
+			newItem->setRenderLayer(110);
 			return newItem;
 		}
 		return nullptr;
@@ -121,14 +123,14 @@ Item* Inventory::addItemToSlot(Item* item, int slot) {
 	// If the inventory item has the same ID and is at less than
 	// max stacks then merge the items
 	else if (invItem->getItemInfo()->ID == item->getItemInfo()->ID &&
-			 invItem->getItemInfo()->maxStack < invItem->getStackSize()) {
+		invItem->getItemInfo()->maxStack < invItem->getStackSize()) {
 		// If there are more stacks in total than the max stack, create a new
 		// instance
 		if (invItem->getStackSize() + item->getStackSize() > invItem->getItemInfo()->maxStack) {
 			int newSize = invItem->getStackSize() + item->getStackSize() - invItem->getItemInfo()->maxStack;
 			invItem->setMaxStack();
 			Item* newItem = new Item(item->getItemInfo()->ID, newSize);
-			newItem->setRenderLayer(NULL);
+			newItem->setRenderLayer(110);
 			mEntityManager->addEntity(newItem);
 			return item;
 		}
@@ -144,11 +146,12 @@ Item* Inventory::addItemToSlot(Item* item, int slot) {
 Item* Inventory::takeItemFromSlot(int slot, Entity* anchor) {
 
 	Item* invItem = mInventorySlots[slot].getContent();
-	if (invItem == nullptr || anchor == nullptr) return nullptr;
+	if (slot < 0 || invItem == nullptr || anchor == nullptr) return nullptr;
 
 	int newSlot = getNewSlot(invItem->getInventorySlot(), invItem->getItemInfo()->width, invItem->getItemInfo()->height);
 
 	invItem->anchorToEntity(anchor);
+	invItem->setRenderLayer(110);
 	std::vector<int> indices = getArea(invItem, newSlot);
 	for (size_t i = 0; i < indices.size(); i++) {
 		mInventorySlots[indices[i]].setContent(nullptr);
@@ -157,36 +160,81 @@ Item* Inventory::takeItemFromSlot(int slot, Entity* anchor) {
 }
 
 Item* Inventory::swapItems(Item* item, int slot, Entity* anchor) {
-	if (slot > mFrameNrX * mFrameNrY || item == nullptr) return item;
+	if (slot > mFrameNrX * mFrameNrY || slot < 0
+		|| item == nullptr) return item;
 
 	Item* invItem = nullptr;
 	int newSlot = getNewSlot(slot, item->getItemInfo()->width, item->getItemInfo()->height);
 	std::vector<int> indices(getArea(item, newSlot));
 	bool empty = true;
-	indices = getArea(item, newSlot);
 	Item* itemToCheck = mInventorySlots[slot].getContent();
 
 	// Check to see if the requested slots have only a single item in them, or are empty
 	for (size_t i = 0; i < indices.size(); i++) {
 		invItem = mInventorySlots[indices[i]].getContent();
-		if (invItem != nullptr || itemToCheck != invItem) {
+		if (itemToCheck == nullptr && invItem != nullptr)
+			itemToCheck = invItem;
+		if (invItem != nullptr && itemToCheck != invItem && itemToCheck != nullptr) {
 			return item;
 		}
-		if (itemToCheck == nullptr)
-			itemToCheck = mInventorySlots[indices[i]].getContent();
 	}
 
 	// If all slots were empty, no need to swap
 	if (itemToCheck == nullptr) {
+		item->anchorToEntity(&mInventorySlots[newSlot]);
+		item->setRenderLayer(110);
+		for (size_t i = 0; i < indices.size(); i++)
+			mInventorySlots[indices[i]].setContent(item);
 
+		if (item->getItemInfo()->maxStack < item->getStackSize()) {
+			int newSize = item->getStackSize() - item->getItemInfo()->maxStack;
+			Item* newItem = new Item(item->getItemInfo()->ID, newSize);
+			item->setMaxStack();
+			mEntityManager->addEntity(newItem);
+			newItem->setRenderLayer(110);
+			return newItem;
+		}
+		return nullptr;
 	}
+	// If the inventory item has the same ID and is at less than
+	// max stacks then merge the items
+	else if (itemToCheck->getItemInfo()->ID == item->getItemInfo()->ID &&
+		itemToCheck->getItemInfo()->maxStack > itemToCheck->getStackSize()) {
+		// If there are more stacks in total than the max stack, create a new
+		// instance
+		if (itemToCheck->getStackSize() + item->getStackSize() > itemToCheck->getItemInfo()->maxStack) {
+			int newSize = itemToCheck->getStackSize() - itemToCheck->getItemInfo()->maxStack;
+			itemToCheck->setMaxStack();
+			item->addToStack(newSize);
+			return item;
+		}
+
+		itemToCheck->addToStack(item->getStackSize());
+		item->garbage();
+		return nullptr;
+	}
+	// If not, proceed with swap
 	else {
+		int newSlot2 = getNewSlot(itemToCheck->getInventorySlot(), itemToCheck->getItemInfo()->width, itemToCheck->getItemInfo()->height);
+		std::vector<int> indices2 = getArea(itemToCheck, newSlot2);
 
+		// Deassociate all slots from the item being swapped out and attach to anchor
+		for (size_t i = 0; i < indices2.size(); i++) {
+			mInventorySlots[indices2[i]].setContent(nullptr);
+		}
+		itemToCheck->anchorToEntity(anchor);
+
+		// And then associate all the slots of the new item and anchor it
+		item->anchorToEntity(&mInventorySlots[newSlot]);
+
+		for (size_t i = 0; i < indices.size(); i++) {
+			mInventorySlots[indices[i]].setContent(item);
+		}
+		return itemToCheck;
 	}
 
-	std::vector<int> indices2();
 
-	return nullptr;
+	return item;
 }
 
 InventorySlot* Inventory::getInventorySlot(int index) {

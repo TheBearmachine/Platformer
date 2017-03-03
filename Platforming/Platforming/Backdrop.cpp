@@ -2,6 +2,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 Backdrop::Backdrop() :
+	Entity(UNUSED),
 	mSprite(), mTexture() {
 
 }

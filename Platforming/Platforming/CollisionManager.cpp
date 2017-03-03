@@ -52,7 +52,7 @@ std::pair<float, float> getProjection(const sf::Shape& shape, sf::Vector2f& axis
 
 void CollisionManager::detectCollisions() {
 	sf::FloatRect bounds(mWindow->mapPixelToCoords({ 0, 0 }),
-						 mWindow->getView().getSize());
+		mWindow->getView().getSize());
 	bounds.left -= 50.0f;
 	bounds.top -= 50.0f;
 	bounds.height += 100.0f;
@@ -92,7 +92,7 @@ void CollisionManager::detectCollisions() {
 			item = dynamic_cast<Item*>(collidable1);
 			if (item->getAnchor() == nullptr &&
 				(collidable0->getHitbox().intersects(collidable1->getHitbox()) &&
-				(collidable0->getCategory() != collidable1->getCategory()))) {
+					(collidable0->getCategory() != collidable1->getCategory()))) {
 				colliding.push(std::make_pair(collidable0, collidable1));
 			}
 		}
