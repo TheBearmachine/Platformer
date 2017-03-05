@@ -160,6 +160,7 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityManager.h" />
+    <ClInclude Include="Equipment.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="EventObserver.h" />
     <ClInclude Include="GameManager.h" />
